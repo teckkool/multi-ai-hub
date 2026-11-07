@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { callOpenAI, callAnthropic, callGrok } from '@/lib/aiClients'
 
+type ClientKeys = { openai?: string; anthropic?: string; xai?: string } | null
+
 type AIConfig = {
   model: string
   label: string
-  fn: (prompt: string) => Promise<string>
+  fn: (prompt: string, keys: ClientKeys) => Promise<string>
 }
 
 const AI_MAP: Record<string, AIConfig> = {
@@ -68,7 +70,7 @@ function formatContent(
 }
 
 export async function POST(req: NextRequest) {
-  const { prompt, projectName, ais, format } = await req.json()
+  const { prompt, projectName, ais, format, keys } = await req.json()
 
   if (!prompt || !Array.isArray(ais) || ais.length === 0) {
     return NextResponse.json({ error: 'prompt and ais are required' }, { status: 400 })
@@ -83,7 +85,7 @@ export async function POST(req: NextRequest) {
       const config = AI_MAP[aiId]
       if (!config) throw new Error(`Unknown AI: ${aiId}`)
 
-      const response = await config.fn(prompt)
+      const response = await config.fn(prompt, keys ?? null)
       const content = formatContent(aiId, config.model, prompt, response, ext, projectName)
       const aiSlug = aiId === 'openai' ? 'chatgpt' : aiId
       const filename = `${slug}_${aiSlug}_${date}.${ext}`
