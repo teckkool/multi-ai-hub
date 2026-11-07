@@ -2,26 +2,47 @@
   "name": "multi-ai-hub",
   "version": "0.1.0",
   "private": true,
+  "main": "electron/main.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "electron": "electron .",
+    "electron:build": "next build && electron-builder --publish=never"
+  },
+  "build": {
+    "appId": "com.multiaihub.app",
+    "productName": "Multi-AI Hub",
+    "icon": "public/icons/icon-512.png",
+    "files": [
+      "electron/**/*",
+      "public/**/*",
+      ".next/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "mac": { "category": "public.app-category.productivity" },
+    "win": { "target": "nsis" },
+    "linux": { "target": "AppImage" }
   },
   "dependencies": {
-    "next": "^14.2.0",
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0",
-    "openai": "^4.73.0",
     "@anthropic-ai/sdk": "^0.33.0",
-    "jszip": "^3.10.1"
+    "jszip": "^3.10.1",
+    "next": "^14.2.0",
+    "openai": "^4.73.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "typescript": "^5",
-    "tailwindcss": "^3.4.1",
+    "autoprefixer": "^10.0.1",
+    "electron": "^31.0.0",
+    "electron-builder": "^24.0.0",
     "postcss": "^8",
-    "autoprefixer": "^10.0.1"
+    "sharp": "^0.35.5",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
   }
 }
